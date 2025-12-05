@@ -1,14 +1,18 @@
 FROM nginx:alpine
 
-# Copy nginx config
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Remove default nginx config
+RUN rm /etc/nginx/conf.d/default.conf
 
 # Copy static files
 COPY public/ /usr/share/nginx/html/
 
-# Expose port
-EXPOSE 80
+# Simple nginx config inline
+RUN echo 'server { \
+    listen 80; \
+    server_name _; \
+    root /usr/share/nginx/html; \
+    index index.html; \
+    location / { try_files $uri $uri/ /index.html; } \
+}' > /etc/nginx/conf.d/default.conf
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD wget --quiet --tries=1 --spider http://localhost/health || exit 1
+EXPOSE 80
