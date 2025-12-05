@@ -10,26 +10,25 @@ services:
     environment:
       - TZ=Asia/Jakarta
     networks:
-      - traefik_net
+      - kreanovasi_appnet
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=kreanovasi_appnet"
       # HTTPS Router
-      - "traefik.http.routers.admin-unlocktool-secure.rule=Host(`admin.sewaunlocktool.id`)"
-      - "traefik.http.routers.admin-unlocktool-secure.entrypoints=websecure"
-      - "traefik.http.routers.admin-unlocktool-secure.tls.certresolver=le"
-      - "traefik.http.routers.admin-unlocktool-secure.service=admin-unlocktool"
+      - "traefik.http.routers.admin-secure.rule=Host(`admin.sewaunlocktool.id`)"
+      - "traefik.http.routers.admin-secure.entrypoints=websecure"
+      - "traefik.http.routers.admin-secure.tls.certresolver=le"
+      - "traefik.http.routers.admin-secure.service=admin-svc"
       # HTTP Router (redirect to HTTPS)
-      - "traefik.http.routers.admin-unlocktool.rule=Host(`admin.sewaunlocktool.id`)"
-      - "traefik.http.routers.admin-unlocktool.entrypoints=web"
-      - "traefik.http.routers.admin-unlocktool.middlewares=https-redirect"
+      - "traefik.http.routers.admin.rule=Host(`admin.sewaunlocktool.id`)"
+      - "traefik.http.routers.admin.entrypoints=web"
+      - "traefik.http.routers.admin.middlewares=admin-https-redirect"
       # Middlewares
-      - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
-      - "traefik.http.middlewares.https-redirect.redirectscheme.permanent=true"
+      - "traefik.http.middlewares.admin-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.admin-https-redirect.redirectscheme.permanent=true"
       # Service
-      - "traefik.http.services.admin-unlocktool.loadbalancer.server.port=80"
+      - "traefik.http.services.admin-svc.loadbalancer.server.port=80"
 
 networks:
-  traefik_net:
+  kreanovasi_appnet:
     external: true
-    name: kreanovasi_appnet
