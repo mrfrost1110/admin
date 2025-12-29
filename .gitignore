@@ -9,3 +9,6 @@ node_modules/
 *.BOK
 *.bak
 .BOK/
+.env.*.local
+Thumbs.db
+*.backup
